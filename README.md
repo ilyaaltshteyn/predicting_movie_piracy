@@ -1,6 +1,7 @@
 ###Metis project 2: Predicting movie piracy
 
 To do next:
+
 1. Fix NO_URL_ERRORs:
  *A lot of the time, these are movies that have puntuation in the title. Remove punctuation to align title more with putlocker's url structure. Punctuation is sometimes periods, colons, etc.
  *Some of the time, these are movies that have the year wrong. To fix this, consider checking the url for a year up and a year down.
