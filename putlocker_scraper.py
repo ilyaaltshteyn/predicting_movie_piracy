@@ -5,9 +5,9 @@ import urllib2, re
 from bs4 import BeautifulSoup
 import pandas as pd
 
-#Note that you're reading movie_list2, not just movie_list, because this
-#is the one that has the putlocker links!
-data = pd.read_csv('movie_list2.csv')
+#Note that you're working with movie_list3, which is the final version of
+#the raw data.
+data = pd.read_csv('movie_list3.csv')
 
 def soup_maker(url):
     page = urllib2.urlopen(url)
@@ -29,6 +29,10 @@ def pull_alt_version_count(row):
         # print tables[5]
         rows = tables[5].find_all('tr')
         # print rows
-        print len(rows)
+        print row['Unnamed: 0']
+        return len(rows)
 
-data['version_count'] = data[5:10].apply(pull_alt_version_count, axis = 1)
+data['version_count'] = data.apply(pull_alt_version_count, axis = 1)
+
+data.to_csv(path_or_buf = "movie_list4.csv",
+    encoding = 'utf-8')

@@ -100,22 +100,3 @@ data2.to_csv(path_or_buf = "/Users/ilya/metis/week2/project2/movie_list2.csv",
     encoding = 'utf-8')
 
 
-
-def pull_alt_version_count(row):
-    url = row['putlocker_url']
-    if url == 'NO_URL_ERROR':
-        return 0
-    else:
-        soup = soup_maker(url)
-        content = soup.find('div', class=)
-        tables = content.find_all('table')
-        print tables
-        rows = tables[3].tbody.find_all('tr')
-        print rows
-        print len(rows)
-
-data['version_count'] = data[:2].apply(pull_alt_version_count, axis = 1)
-
-
-
-
