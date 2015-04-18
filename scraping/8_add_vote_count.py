@@ -46,4 +46,15 @@ for index, row in data.iterrows():
         except:
             data['imdb_vote_count'].ix[index] = 'PULL_ERROR'
 
+regex = r'\D+'
+data['votecount_clean'] = [re.sub(regex,'',x) for x in \
+    data['imdb_vote_count']]
+data['votecount_clean'] = [x if x!= '' else 'NaN' for x in data['votecount_clean']]
+del data['Unnamed: 0']
+del data['imdb_vote_count']
+
+data.to_csv(path_or_buf = "/Users/ilya/metis/week2/project2/movie_list8.csv",
+    encoding = 'utf-8')
+
+
 
