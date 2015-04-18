@@ -20,9 +20,6 @@ def dict_maker(url):
 
 #Call API for each movie and return imdb rating:
 
-template = 'http://www.omdbapi.com/?t=' + title[0] + '+' + title[2]etc +
-'&y=' + year + '&plot=full&r=json'
-
 title = 'Django Unchained'
 year= '2012'
 data['metascore'] = 'Untouched'
@@ -33,8 +30,7 @@ data['director'] = 'Untouched'
 data['imdb_vote_count'] = 'Untouched'
 data['imdb_id'] = 'Untouched'
 for index, row in data.iterrows():
-    if index == 3:
-        break
+    print index
     title = row.title
     year = row.year
     title_parted = []
@@ -44,12 +40,77 @@ for index, row in data.iterrows():
     name_part = ''.join(title_parted[:-1])
     url = 'http://www.omdbapi.com/?t=' + name_part + '&y=' + str(year) + \
         '&plot=full&r=json'
-    json_data = dict_maker(url)
-    if 'Response' in json_data:
-        row['metascore'] = 'PULL_ERROR'
+    try:
+        json_data = dict_maker(url)
+    except:
+        print '********API_ERROR************\n'*200
+        continue
+    if json_data['Response'] == 'False':
+        data['metascore'].ix[index] = 'PULL_ERROR'
+        data['imdb_rating'].ix[index] = 'PULL_ERROR'
+        data['actors'].ix[index] = 'PULL_ERROR'
+        data['awards'].ix[index] = 'PULL_ERROR'
+        data['director'].ix[index] = 'PULL_ERROR'
+        data['imdb_vote_count'].ix[index] = 'PULL_ERROR'
+        data['imdb_id'].ix[index] = 'PULL_ERROR'
+
     else:
         try:
-            row['metascore'] = json_data['Metascore']
-    print json_data    
+            data['metascore'].ix[index] = json_data['Metascore']
+            data['imdb_rating'].ix[index] = json_data['imdbRating']
+            data['actors'].ix[index] = json_data['Actors']
+            data['awards'].ix[index] = json_data['Awards']
+            data['director'].ix[index] = json_data['Director']
+            data['imdb_vote_count'].ix[index] = json_data['imdbVotes']
+            data['imdb_id'].ix[index] = json_data['imdbID']
 
-    print url
+        except:
+            data['metascore'].ix[index] = 'PULL_ERROR'
+            data['imdb_rating'].ix[index] = 'PULL_ERROR'
+            data['actors'].ix[index] = 'PULL_ERROR'
+            data['awards'].ix[index] = 'PULL_ERROR'
+            data['director'].ix[index] = 'PULL_ERROR'
+            data['imdb_vote_count'].ix[index] = 'PULL_ERROR'
+            data['imdb_id'].ix[index] = 'PULL_ERROR'
+
+#Remove commas from imdb_vote_count:
+regex = re.sub(r'\D+','', x)
+data['imdb_vote_count'] = [int(regex) for x in data['imdb_vote_count']]
+
+#Split up wins and nominations:
+data['major_award_wins_or_noms'] = 'Untouched'
+data['minor_award_wins'] = 'Untouched'
+data['minor_award_noms'] = 'Untouched'
+for index, row in data.iterrows():
+    print index
+    awards_string_elements = data['awards'].ix[index].split()
+    awards_numbers = [x for x in awards_string_elements if x.isdigit()]
+    if len(awards_numbers) == 3:
+        data['major_award_wins_or_noms'].ix[index] = awards_numbers[0]
+        data['minor_award_wins'].ix[index] = awards_numbers[1]
+        data['minor_award_noms'].ix[index] = awards_numbers[2]
+        continue
+    elif len(awards_numbers) == 2:
+        data['major_award_wins_or_noms'].ix[index] = 0
+        data['minor_award_wins'].ix[index] = awards_numbers[0]
+        data['minor_award_noms'].ix[index] = awards_numbers[1]
+        continue
+    elif len(awards_numbers) == 1:
+        data['major_award_wins_or_noms'].ix[index] = 0
+        data['minor_award_wins'].ix[index] = 0
+        data['minor_award_noms'].ix[index] = awards_numbers[0]
+        continue
+    elif data['awards'].ix[index] == 'PULL_ERROR':
+        continue
+    elif data['awards'].ix[index] == 'N/A':
+        data['major_award_wins_or_noms'].ix[index] = 0
+        data['minor_award_wins'].ix[index] = 0
+        data['minor_award_noms'].ix[index] = 0
+        continue
+    else:
+        continue
+
+
+
+data.to_csv(path_or_buf = "movie_list7.csv", encoding = 'utf-8')
+
