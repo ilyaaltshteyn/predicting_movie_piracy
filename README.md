@@ -2,21 +2,32 @@
 
 ####Variable descriptions:
 title               movie title
+
 studio_name         name of studio/distributor
+
 studio_abbrev       abbreviation of studio name that boxofficemojo.com uses
+
 page                page number in the list of "All movies" for a given studio
+
 rank                the rank of the movie, by total gross, for its studio
+
 total_gross         the total amount the movie has grossed
+
 opening_date        date movie opened in theatres
+
 link                link to boxofficemojo.com page for the movie
+
 year                4-digit year that the movie came out in
+
 putlocker_url       url for the movie on the putlocker site, if it exists and
                     uses one of the standard url formats. One of the standard
                     url formats includes movie year, which can sometimes be off
                     by 1 year, so I checked to see if the movie was located at
                     the url with 1 year off as well as for the year in this 
                     data.
+
 version_count       the number of versions of the movie that are on putlocker
+
 genre_clean         the genres that the movie falls into. Might later separate
                     into separate columns, but might just leave it dirty.
 rating_clean        the MPAA rating for the movie (R, PG-13, etc)
