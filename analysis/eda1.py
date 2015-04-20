@@ -19,7 +19,7 @@ for col in data:
 data2 = data[data.version_count != 0]
 print len(data2) #Was 3979 rows, now 3096 rows.
 
-#Now plot the distribution of the outcome variable:
+#Plot the distribution of the outcome variable:
 data2.version_count.hist(bins = 65, grid = False)
 sns.despine(left = True, right = True, bottom = True)
 print len(data2.version_count)
@@ -36,9 +36,27 @@ plt.xlabel('Version count')
 plt.ylabel('# of movies with fewer versions')
 plt.show()
 
+#Remove movies that have version_count = 1 and re-do histogram:
+data3 = data2[data2.version_count != 1]
+print len(data3) #Was 3096, now 2856.
+
+#Re-plot histogram:
+data3.version_count.hist(bins = 60, grid = False)
+sns.despine(left = True, right = True, bottom = True)
+print len(data3.version_count)
+plt.title('Distribution of version counts (the outcome variable; can also be\n\
+    thought of as a piracy index), after removing version_count = 0, n = 3096')
+plt.show()
+
+#Calculate summary stats for the outcome variable:
+print np.mean(data3.version_count) #8.10
+print np.var(data3.version_count) #32.32
+print np.median(data3.version_count) #6
+
+
 
 #***----The goal below is to look at version_count by studio, but only for
-#studios that have 
+#studios that have at least 50 movies.
 
 #Figure out how many rows each studio has:
 studios = set(data2.studio_name)
