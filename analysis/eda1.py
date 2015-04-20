@@ -20,7 +20,7 @@ data2 = data[data.version_count != 0]
 print len(data2) #Was 3979 rows, now 3096 rows.
 
 #Plot the distribution of the outcome variable:
-data2.version_count.hist(bins = 65, grid = False)
+data2.version_count.hist(bins = 20, grid = False)
 sns.despine(left = True, right = True, bottom = True)
 print len(data2.version_count)
 plt.title('Distribution of version counts (the outcome variable; can also be\n\

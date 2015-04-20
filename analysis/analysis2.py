@@ -1,11 +1,15 @@
-#This script runs negative binomial models on the clean data. It uses
-#version_count as the outcome variable and several combinations of predictors.
+#This analysis tries to fit a bunch of different negative binomial models and
+#ranks them by AIC. The models are fit on various combinations of all numerical
+#predictor variables.
 
-#This analysis follows instructions for doing negative binomial analyses from
-#here: http://bit.ly/1H7QG4A
+import pandas as pd
+import itertools
 
-#Make function that calculates likelihood for a neg binom model for count data
+data = pd.read_csv('/Users/ilya/metis/week2/project2/clean_data.csv')
+del data['Unnamed: 0']
 
+#Create all the stuff you need to make negative binomial models, 
+#from: http://bit.ly/1H7QG4A
 import numpy as np
 from scipy.stats import nbinom
 def _ll_nb2(y, X, beta, alph):
@@ -34,16 +38,24 @@ class NBin(GenericLikelihoodModel):
                                       maxiter=maxiter, maxfun=maxfun,
                                       **kwds)
 
-import pandas as pd
-data = pd.read_csv('/Users/ilya/metis/week2/project2/clean_data.csv')
-del data['Unnamed: 0']
-data = data.dropna(subset = ['total_gross', 'imdb_rating', 'votecount_clean',
-    'runtime_mins', 'version_count', 'major_award_wins_or_noms'])
+predictors = ['total_gross', 'year', 'release_clean2', 'runtime_mins', 'metascore',
+    'imdb_rating', 'major_award_wins_or_noms', 'minor_award_wins',
+    'minor_award_noms', 'votecount_clean']
+
+def model_maker(predictors_list):
+    model_in = "version_count ~"
+    for x in predictors_list:
+        model_in += x + "+"
+    model_in = model_in[:-1]
+    return model_in
 
 import patsy
+data = data.dropna(subset = predictors)
+model_spec = model_maker(predictors)
+
 #Outcome var is version_count
 #Input var is total_gross
-y, X = patsy.dmatrices('version_count~major_award_wins_or_noms+total_gross', data)
+y, X = patsy.dmatrices(model_spec, data)
 # print y[:5]
 # print X[:5]
 
@@ -52,11 +64,12 @@ res = mod.fit()
 
 print res.summary()
 
-y, X = patsy.dmatrices('total_gross ~ major_award_wins_or_noms +\
-    minor_award_wins + minor_award_noms', data)
-mod2 = NBin(y, X)
-res2 = mod2.fit()
-print res2.summary()
+
+
+
+
+
+
 
 
 
