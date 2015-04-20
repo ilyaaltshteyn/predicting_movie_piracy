@@ -1,4 +1,6 @@
 ###Metis project 2: Predicting movie piracy
+**For variable descriptions and some data collection notes, please see readme.txt**
+
 ####To do next:
 
 1. Fix NO_URL_ERRORs (which means there is no working putlocker url with the default structure) -- DONE
