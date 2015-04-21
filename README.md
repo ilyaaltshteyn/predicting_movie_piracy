@@ -3,6 +3,14 @@
 
 ####To do next:
 
+1. Fix opening theater count variable
+
+2. Re-run model with categorical: film on putlocker or not.
+
+3. Re-run model with categorical: 1/2 versions vs more than that on putlocker.
+
+4. Predict total_gross from theater count.
+
 1. Fix NO_URL_ERRORs (which means there is no working putlocker url with the default structure) -- DONE
 
 2. Retrieve piracy data from putlocker.is -- DONE

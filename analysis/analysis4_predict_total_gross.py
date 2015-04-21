@@ -1,13 +1,15 @@
 #This script models total_gross from a number of predictors.
 
+import scipy.stats as sci
 import pandas as pd, numpy as np
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
 data = pd.read_csv('/Users/ilya/metis/week2/project2/clean_data.csv')
 del data['Unnamed: 0']
-predictors = ['total_gross', 'major_award_wins_or_noms',] 
-    # 'minor_award_wins', 'minor_award_noms', 'metascore']
+predictors = ['total_gross', 'major_award_wins_or_noms','release_width', 'fame'] 
+data = data[data.release_width < 50000]
 data = data.dropna(subset = predictors)
+
 
 #Keep track of what you're doing by adding the outcomes to a list:
 outcomes_list = []
@@ -267,3 +269,54 @@ outcomes_list.append(['m7',est.rsquared, est.aic])
 
 #Compute R**2: .014
 print est.rsquared
+
+#***---PREDICT LOG TOTAL GROSS FROM RELEASE WIDTH:
+import statsmodels.formula.api as smf
+data = data[data.fame > 0]
+data['any_versions'] = [1 if x > 0 else 0 for x in data.version_count]
+data['log_gross'] = np.log(data.total_gross)
+est = smf.ols(formula = 'np.log(total_gross) ~ np.log(release_width) + metascore + np.log(fame) + imdb_rating + major_award_wins_or_noms', data = data).fit()
+print est.summary()
+
+sm.graphics.plot_fit(est, 3)
+plt.show()
+
+#Plot histogram of residuals:
+resids2 = est.resid
+plt.hist(resids2)
+plt.title('Histogram of residuals')
+plt.show()
+
+#Compute exponentiated residuals from predictions
+
+
+#***---PREDICT METASCORE FROM FAME:
+
+est = smf.ols(formula = 'np.log(total_gross) ~ np.log(fame)', data = data).fit()
+print est.summary()
+
+
+import statsmodels.formula.api as smf
+data['any_versions'] = [1 if x > 0 else 0 for x in data.version_count]
+est = smf.ols(formula = 'any_versions ~ np.sqrt(release_width) + np.log(total_gross) + votecount_clean', data = data).fit()
+print est.summary()
+
+#Plot model:
+sm.graphics.plot_fit(est, 1)
+plt.show()
+
+#Plot histogram of residuals:
+resids2 = est.resid
+plt.hist(resids2)
+plt.title('Histogram of residuals')
+plt.show()
+
+#Plot residuals against predicted values:
+plt.scatter(est.fittedvalues, 
+    resids2, alpha = .2)
+# plt.hlines(y = 0)
+# plt.axis((1,6,-6,6))
+plt.title('Residuals plotted against model prediction')
+plt.show()
+
+

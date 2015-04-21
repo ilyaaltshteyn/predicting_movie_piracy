@@ -107,3 +107,30 @@ plt.title('Residuals plotted against model prediction')
 plt.show()
 
 #Compute R**2: .014
+
+#***---PREDICT CATEGORICAL VERSION COUNT from total_gross:
+data['version_count_cat'] = [1 if x > 0 else 0 for x in data.version_count]
+data['log_gross'] = np.log(data.total_gross)
+
+sci.probplot(data.version_count_cat, plot = plt)
+plt.show()
+fit3 = smf.ols("square_rooted ~ major_award_wins_or_noms", data).fit()
+print fit3.summary()
+sm.graphics.plot_fit(fit3, 1)
+plt.show()
+
+#Plot histogram of residuals:
+resids3 = fit3.resid
+plt.hist(resids3)
+plt.title('Histogram of residuals')
+plt.show()
+
+#Plot residuals against predicted values:
+plt.scatter(fit3.fittedvalues, 
+    resids3, alpha = .2)
+# plt.hlines(y = 0)
+# plt.axis((1,6,-6,6))
+plt.title('Residuals plotted against model prediction')
+plt.show()
+
+

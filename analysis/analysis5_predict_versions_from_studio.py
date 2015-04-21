@@ -8,10 +8,11 @@ import seaborn as sns
 
 data = pd.read_csv('/Users/ilya/metis/week2/project2/clean_data.csv')
 del data['Unnamed: 0']
-predictors = ['studio_name', 'version_count']
+predictors = ['studio_name', 'version_count', 'total_gross', 'metascore',
+    'imdb_rating', 'major_award_wins_or_noms', 'votecount_clean']
 data = data.dropna(subset = predictors)
 data = data[data.version_count > 0]
-data = data[['studio_name', 'version_count']]
+data = data[predictors]
 
 unique_studios = set(data.studio_name)
 data['studio1'] = [1 if x == 'Weinstein Company' else 0 for x \
@@ -74,12 +75,15 @@ for studio in unique_studios:
 for studio in unique_studios:
     data[studio] = [1 if x == studio else 0 for x in data.studio_name]
 
-data.columns = ['studio'+str(x) for x in range(len(data.columns))]
+data.columns = ['pred'+str(x) for x in range(len(data.columns))]
 
-fit2 = smf.ols("studio3 ~ C(studio5) + C(studio6) + C(studio7) + C(studio8) + \
-    C(studio9)+ C(studio10) + C(studio11) + C(studio12) + C(studio13) + \
-    C(studio14) + C(studio15) + C(studio16) + C(studio17) + C(studio18) + \
-    C(studio19) + C(studio20) + C(studio21)+ C(studio22) + C(studio23)",
+predictors = ['studio_name', 'version_count', 'total_gross', 'metascore',
+    'imdb_rating', 'major_award_wins_or_noms', 'votecount_clean']
+
+fit2 = smf.ols("pred1 ~ C(pred8) + C(pred9)+ C(pred10) + C(pred11) + C(pred12) + C(pred13) +\
+    C(pred14) + C(pred15) + C(pred16) + C(pred17) + C(pred18) + \
+    C(pred19) + C(pred20) + C(pred21)+ C(pred22) + C(pred23) + C(pred24) +\
+    + C(pred25) + C(pred26)",
     data).fit()
 print fit2.summary()
 
