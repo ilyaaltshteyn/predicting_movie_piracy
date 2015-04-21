@@ -37,19 +37,19 @@ class NBin(GenericLikelihoodModel):
 import pandas as pd
 data = pd.read_csv('/Users/ilya/metis/week2/project2/clean_data.csv')
 del data['Unnamed: 0']
+data = data[data.version_count > 0]
 data = data.dropna(subset = ['total_gross', 'imdb_rating', 'votecount_clean',
     'runtime_mins', 'version_count', 'major_award_wins_or_noms'])
 
 import patsy
 #Outcome var is version_count
 #Input var is total_gross
-y, X = patsy.dmatrices('version_count~major_award_wins_or_noms+total_gross', data)
+y, X = patsy.dmatrices('version_count~major_award_wins_or_noms', data)
 # print y[:5]
 # print X[:5]
 
 mod = NBin(y, X)
 res = mod.fit()
-
 print res.summary()
 
 y, X = patsy.dmatrices('total_gross ~ major_award_wins_or_noms +\
