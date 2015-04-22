@@ -33,11 +33,16 @@ test_data = data.ix[rows]
 
 #Histogram of outcome variable:
 plt.hist(training_data.total_gross/1000000, bins = 30)
-plt.title('Distribution of movie total grosses in millions of $.\nTraining\
+plt.title('Distribution of movie total domestic grosses in millions of $.\nTraining\
  data only, n = 1227', fontsize = '20')
 #The far-right outlier is the Dark Night (2008)
 plt.xlabel('Millions of dollars made', fontsize = '20')
 plt.ylabel('Number of movies in dataset', fontsize = '20')
+plt.xticks(fontsize = '16')
+plt.yticks(fontsize = '16')
+plt.annotate('Avatar', xy=(735, 5), xytext=(700, 40),
+            arrowprops=dict(facecolor='black', shrink=0.05), fontsize = '16'
+            )
 sns.despine()
 plt.show()
 
@@ -45,9 +50,11 @@ plt.show()
 scatter_data = training_data[['log_gross', 'log_release_width', 'metascore', 
     'log_average_fame', 'major_award_wins_or_noms', 
     'log_votecount']]
-sns.pairplot(scatter_data, size = 2.5, )
-plt.xlabel('')
-plt.ylabel('')
+scatter_data.columns = ['log(gross)', 'log(release_width)', 'metascore', 
+    'log(fame)', 'major_awards', 
+    'log(imdb_votecount)']
+sns.pairplot(scatter_data, size = 2).set(xticks = [], yticks = [])
+plt.title('Scatterplot matrix of variables in model')
 plt.show()
 
 #***---RUN MODEL AND EVALUATE-----------------------
@@ -64,26 +71,25 @@ print results.summary()
 #Plot hist of residuals:
 resids2 = results.resid
 plt.hist(resids2)
-plt.title('Histogram of residuals')
+plt.title('Histogram of model residuals', fontsize = '20')
+plt.xlabel('Residual size', fontsize = '20')
+plt.ylabel('Frequency', fontsize = '20')
+plt.xticks(fontsize = '16')
+plt.yticks(fontsize = '16')
+sns.despine()
 plt.show()
 
-#1. Plot the model's predicted ys vs observed ys
-td = training_data
-b = results.params
-predicted_x = b[0] + b[1]*td.log_release_width + b[2]*td.metascore +\
-    b[3]*td.log_average_fame + b[4]*td.imdb_rating +\
-    b[5]*td.major_award_wins_or_noms + b[6]*td.votecount_clean
-
-plt.scatter(results.predict(X), y, facecolors = 'none', edgecolors = 'black')
+#1. Plot the model's predicted ys vs observed ys in test set:
+test_X = test_data[predictors]
+test_X = sm.add_constant(test_X)
+y_predicted = results.predict(test_X)
+plt.scatter(y_predicted, test_data['log_gross'], facecolors = 'none', edgecolors = 'black')
 plt.title('Model predicted log(total_gross) vs observed log(total_gross)')
 plt.xlabel('Overall x')
 plt.ylabel('Observed log(total_gross)')
 plt.show()
 
 #2a Predict test set ys from test set Xs:
-test_X = test_data[predictors]
-test_X = sm.add_constant(test_X)
-y_predicted = results.predict(test_X)
 
 #2b. Plot the model against test set ys
 
