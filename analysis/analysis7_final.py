@@ -3,6 +3,8 @@ import pandas as pd, numpy as np
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
 import random
+import seaborn as sns
+sns.set(style = 'white')
 data = pd.read_csv('/Users/ilya/metis/week2/project2/clean_data.csv')
 del data['Unnamed: 0']
 
@@ -20,6 +22,7 @@ data = data[data.fame > 0]
 data['log_average_fame'] = ((data.fame + data.fame_actor2)/2)
 data['log_gross'] = np.log(data.total_gross)
 data['log_release_width'] = np.log(data.release_width)
+data['log_votecount'] = np.log(data.votecount_clean)
 
 #Separate data into training (75%) and test (25%) sets:
 rows = random.sample(data.index, len(data)/4)
@@ -27,13 +30,30 @@ training_data = data.drop(rows)
 test_data = data.ix[rows]
 
 #***---EXPLORE DATA-----------------------
-#Make scatterplot matrix of predictors to look for multicollinearity, and also
-#to see how predictors are related to outcome var. 
+
+#Histogram of outcome variable:
+plt.hist(training_data.total_gross/1000000, bins = 30)
+plt.title('Distribution of movie total grosses in millions of $.\nTraining\
+ data only, n = 1227', fontsize = '20')
+#The far-right outlier is the Dark Night (2008)
+plt.xlabel('Millions of dollars made', fontsize = '20')
+plt.ylabel('Number of movies in dataset', fontsize = '20')
+sns.despine()
+plt.show()
+
+#Scatterplot matrix of predictors:
+scatter_data = training_data[['log_gross', 'log_release_width', 'metascore', 
+    'log_average_fame', 'major_award_wins_or_noms', 
+    'log_votecount']]
+sns.pairplot(scatter_data, size = 2.5, )
+plt.xlabel('')
+plt.ylabel('')
+plt.show()
 
 #***---RUN MODEL AND EVALUATE-----------------------
 #PREDICT LOG TOTAL GROSS FROM RELEASE WIDTH:
 predictors = ['log_release_width', 'metascore', 'log_average_fame',
-    'imdb_rating', 'major_award_wins_or_noms', 'votecount_clean']
+    'major_award_wins_or_noms', 'log_votecount']
 X = training_data[predictors]
 X = sm.add_constant(X)
 y = training_data.log_gross
@@ -47,8 +67,18 @@ plt.hist(resids2)
 plt.title('Histogram of residuals')
 plt.show()
 
-#1. Plot the entire model against observed ys
+#1. Plot the model's predicted ys vs observed ys
+td = training_data
+b = results.params
+predicted_x = b[0] + b[1]*td.log_release_width + b[2]*td.metascore +\
+    b[3]*td.log_average_fame + b[4]*td.imdb_rating +\
+    b[5]*td.major_award_wins_or_noms + b[6]*td.votecount_clean
 
+plt.scatter(results.predict(X), y, facecolors = 'none', edgecolors = 'black')
+plt.title('Model predicted log(total_gross) vs observed log(total_gross)')
+plt.xlabel('Overall x')
+plt.ylabel('Observed log(total_gross)')
+plt.show()
 
 #2a Predict test set ys from test set Xs:
 test_X = test_data[predictors]
