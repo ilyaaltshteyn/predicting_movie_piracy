@@ -20,8 +20,8 @@ data['any_versions'] = [1 if x > 0 else 0 for x in data.version_count]
 data['minor_awards_total'] = data.minor_award_wins + data.minor_award_noms
 data['log_gross'] = np.log(data.total_gross)
 est = smf.ols(formula = 'np.log(total_gross) ~ np.log(release_width) +\
-    metascore + np.log(average_fame) + imdb_rating +\
-    major_award_wins_or_noms + votecount_clean', data = data).fit()
+    metascore + np.sqrt(average_fame)  +\
+    major_award_wins_or_noms + np.log(votecount_clean)', data = data).fit()
 print est.summary()
 
 #Plot histogram of residuals from original model:
