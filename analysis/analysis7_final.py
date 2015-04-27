@@ -48,14 +48,14 @@ sns.despine()
 plt.show()
 
 #2. Scatterplot matrix of predictors:
-scatter_data = training_data[['log_gross', 'log_release_width', 'metascore', 
-    'log_average_fame', 'major_award_wins_or_noms', 
-    'log_votecount']]
-scatter_data.columns = ['log(gross)', 'log(release_width)', 'metascore', 
-    'log(fame)', 'major_awards', 
-    'log(imdb_votecount)']
-sns.pairplot(scatter_data, size = 2).set(xticks = [], yticks = [])
-plt.show()
+# scatter_data = training_data[['log_gross', 'log_release_width', 'metascore', 
+#     'log_average_fame', 'major_award_wins_or_noms', 
+#     'log_votecount']]
+# scatter_data.columns = ['log(gross)', 'log(release_width)', 'metascore', 
+#     'log(fame)', 'major_awards', 
+#     'log(imdb_votecount)']
+# sns.pairplot(scatter_data, size = 2).set(xticks = [], yticks = [])
+# plt.show()
 
 #***---RUN MODEL AND EVALUATE-----------------------
 #1. PREDICT LOG TOTAL GROSS FROM RELEASE WIDTH:
@@ -144,8 +144,8 @@ plt.title('Predicted total_gross as a function of how widely the movie is releas
 plt.xlabel('log(release_width)', fontsize = '16')
 plt.ylabel('log(total_gross)', fontsize = '16')
 plt.legend(loc = 4, fontsize = '16')
-plt.annotate('"Shut Up and Sing" made $927,270', xy=(4.48,13.9), xytext=(3.5,17), arrowprops=dict(arrowstyle = "->"), fontsize = '15')
-plt.annotate('My model would predict that it made $833,118', xy=(4.5,13.71), xytext=(5,12), arrowprops=dict(arrowstyle = "->"), fontsize = '15')
+plt.annotate('"Shut Up and Sing" made $927,270', xy=(4.48,13.63), xytext=(3.5,17), arrowprops=dict(arrowstyle = "->"), fontsize = '15')
+plt.annotate('My model would predict that it made $803,118', xy=(4.5,13.2), xytext=(5,12), arrowprops=dict(arrowstyle = "->"), fontsize = '15')
 plt.show()
 
 #9. How well did the model work on my test data?
