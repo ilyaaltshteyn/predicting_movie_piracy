@@ -36,3 +36,10 @@ minor_award_wins    number of more minor awards the movie has won
 minor_award_noms    number of more minor awards the movie has been nominated
                     for
 votecount_clean     number of people who voted for the imdb rating.
+release_width       number of theatres the movie was released to.
+actor1              name of first actor listed in actors list (probably the lead).
+wiki_url            wikipedia page url for first actor.
+fame                length of wikipedia page for first actor (characters).
+actor2              name of second actor listed in actors list.
+actor2_wiki_url     wikipedia page url for second actor.
+fame_actor2         length of wikipedia page for second actor (characters).
